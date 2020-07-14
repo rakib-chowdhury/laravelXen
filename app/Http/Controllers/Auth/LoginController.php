@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
+use Illuminate\Support\Facades\Config;
 
 class LoginController extends Controller
 {
@@ -56,16 +57,16 @@ class LoginController extends Controller
         //echo $password;
 
         //$user_res = DB::table('users')->where('userid', $username);
-        
-        if(Auth::attempt(['userid' => $username, 'password' => $password, 'status'=>1])) {
+
+        if(Auth::attempt(['userid' => $username, 'password' => $password, 'status'=>Config::get('constants.activation.active')])) {
             $user = User::find(Auth::user()->id);
             $user->last_login = date('Y-m-d H:i:s');
             $user->save();
 
             /*$user_data = [
                 'name' => Auth::user()->first_name.' '.Auth::user()->last_name,
-                'user_id' => Auth::user()->id, 
-                'username' => Auth::user()->username 
+                'user_id' => Auth::user()->id,
+                'username' => Auth::user()->username
             ];*/
 
             $resp['accessGranted'] = true;
